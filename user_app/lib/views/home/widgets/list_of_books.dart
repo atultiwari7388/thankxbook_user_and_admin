@@ -158,23 +158,42 @@ class _ListOfBooksWidgetState extends State<ListOfBooksWidget> {
                       ),
                     ),
                     SizedBox(height: 5.h),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Text('MRP ',
+                    //         style: appStyle(14, kDark, FontWeight.normal)),
+                    //     Text(
+                    //       "₹ ${bookData['mrp']}",
+                    //       style: appStyle(14, kDark, FontWeight.bold)
+                    //           .copyWith(decoration: TextDecoration.lineThrough),
+                    //     ),
+                    //     SizedBox(width: 5.w),
+                    //     Text(
+                    //       '(${((1 - (int.parse(bookData['sellingPrice']) / int.parse(bookData['mrp']))) * 100).toInt()}% off)',
+                    //       style: TextStyle(fontSize: 14.sp, color: kDark),
+                    //     ),
+                    //   ],
+                    // ),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('MRP ',
                             style: appStyle(14, kDark, FontWeight.normal)),
                         Text(
-                          "₹ ${bookData['mrp']}",
+                          "₹ ${bookData['mrp'] ?? '0'}",
                           style: appStyle(14, kDark, FontWeight.bold)
                               .copyWith(decoration: TextDecoration.lineThrough),
                         ),
                         SizedBox(width: 5.w),
                         Text(
-                          '(${((1 - (int.parse(bookData['sellingPrice']) / int.parse(bookData['mrp']))) * 100).toInt()}% off)',
+                          '(${calculateDiscount(bookData['mrp'], bookData['sellingPrice'])}% off)',
                           style: TextStyle(fontSize: 14.sp, color: kDark),
                         ),
                       ],
                     ),
+
                     SizedBox(height: 10.h),
                   ],
                 ),
@@ -205,6 +224,19 @@ class _ListOfBooksWidgetState extends State<ListOfBooksWidget> {
         ),
       ),
     );
+  }
+
+  int calculateDiscount(dynamic mrp, dynamic sellingPrice) {
+    if (mrp == null || sellingPrice == null) return 0;
+
+    int mrpValue = int.tryParse(mrp.toString()) ?? 1;
+    int sellingValue = int.tryParse(sellingPrice.toString()) ?? 0;
+
+    if (mrpValue <= 0) return 0;
+
+    double discount = (1 - (sellingValue / mrpValue)) * 100;
+
+    return discount.round();
   }
 
   Stream<List<String>> getWishlistStream() {
