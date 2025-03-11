@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381990827165",
+    "project_id": "windayroot-library",
+    "storage_bucket": "windayroot-library.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381990827165:android:c127a8cebfece4baad1074",
+        "android_client_info": {
+          "package_name": "com.windayroot.library_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEbx-lnsV5R0AgrHRkq1bw9_rZzEzriGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
