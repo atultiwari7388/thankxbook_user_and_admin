@@ -163,13 +163,18 @@ class _TotalBooksScreenState extends State<TotalBooksScreen> {
 
                             final userName = snapshot.data!.get("userName") ??
                                 "Unknown User";
+                            final userPhNumber =
+                                snapshot.data!.get("phoneNumber") ?? "0000";
+
+                            String formattedString =
+                                "$userName ($userPhNumber)";
 
                             return reusableRowWidget(
                               serialNumber.toString(),
                               name,
                               description.toString(),
                               price.toString(),
-                              userName,
+                              formattedString,
                               publish,
                               books[index].reference,
                               data,
@@ -314,8 +319,8 @@ class _TotalBooksScreenState extends State<TotalBooksScreen> {
                 Expanded(
                   flex: 1,
                   child: Text(pName,
-                      overflow: TextOverflow.ellipsis,
-                      style: appStyle(16, kDark, FontWeight.normal)),
+                      // overflow: TextOverflow.ellipsis,
+                      style: appStyle(12, kDark, FontWeight.normal)),
                 ),
                 Expanded(
                   flex: 1,

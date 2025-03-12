@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:gif/gif.dart';
 import 'package:user_app/common/custom_button.dart';
 import 'package:user_app/views/auth/otp_screen.dart';
 import '../../common/app_style.dart';
@@ -8,8 +9,37 @@ import '../../constants/constants.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../utils/toast_msg.dart';
 
-class PhoneAuthenticationScreen extends StatelessWidget {
+class PhoneAuthenticationScreen extends StatefulWidget {
   const PhoneAuthenticationScreen({Key? key}) : super(key: key);
+
+  @override
+  State<PhoneAuthenticationScreen> createState() =>
+      _PhoneAuthenticationScreenState();
+}
+
+class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen>
+    with SingleTickerProviderStateMixin {
+  late GifController _gifController;
+
+  @override
+  void initState() {
+    super.initState();
+    _gifController = GifController(vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _gifController.repeat(
+        min: 0,
+        max: 30,
+        period: Duration(seconds: 20),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _gifController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +61,15 @@ class PhoneAuthenticationScreen extends StatelessWidget {
                   // Image or App Logo
                   Expanded(
                     flex: 1,
-                    child: Container(
-                      margin: EdgeInsets.all(40.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20.r),
-                            topRight: Radius.circular(20.r)),
-                        image: const DecorationImage(
-                          image: AssetImage("assets/read_book.png"),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                    child: Gif(
+                      image: AssetImage("assets/login_screen_gif.gif"),
+                      controller: _gifController,
+                      autostart: Autostart.no, // Prevents automatic play
+                      placeholder: (context) => const Text('Loading...'),
+                      onFetchCompleted: () {
+                        _gifController.reset();
+                        _gifController.forward();
+                      },
                     ),
                   ),
                   // phone auth and login section

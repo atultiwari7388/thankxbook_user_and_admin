@@ -160,13 +160,8 @@ class _SellScreenState extends State<SellScreen> {
                                 ),
                                 SizedBox(height: 10.h),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.block_outlined,
-                                            color: kPrimary)),
                                     IconButton(
                                         onPressed: () {
                                           Get.to(() => EditYourBookScreen(

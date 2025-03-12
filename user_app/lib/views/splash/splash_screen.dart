@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:user_app/common/app_style.dart';
 import 'package:user_app/views/dashboard/dash_board_screen.dart';
 import '../../constants/constants.dart';
 import '../../services/firebase_collections.dart';
@@ -43,13 +44,15 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Center(
             child: Image.asset(
-              "assets/book-stack.png",
+              "assets/n_logo_remove.png",
               height: 300.h,
               fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 30.h),
-          Text("Library App"),
+          // SizedBox(height: 10.h),
+          Text(appName, style: appStyle(20, kPrimary, FontWeight.bold)),
+          SizedBox(height: 5.h),
+          Text(slogan, style: appStyle(16, kDarkGray, FontWeight.w500)),
         ],
       ),
     );

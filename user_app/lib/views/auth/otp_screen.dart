@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:gif/gif.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../common/app_style.dart';
 import '../../common/custom_button.dart';
@@ -21,7 +22,10 @@ class OtpScreen extends StatefulWidget {
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends State<OtpScreen>
+    with SingleTickerProviderStateMixin {
+  late GifController _gifController;
+
   late Timer _timer;
   int _secondsRemaining = 120; // 2 minutes
 
@@ -29,11 +33,22 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     super.initState();
     _startTimer();
+
+    _gifController = GifController(vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _gifController.repeat(
+        min: 0,
+        max: 30,
+        period: Duration(seconds: 22),
+      );
+    });
   }
 
   @override
   void dispose() {
     _timer.cancel();
+    _gifController.dispose();
     super.dispose();
   }
 
@@ -70,9 +85,21 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // SizedBox(height: size.height * .2),
-                    Image.asset("assets/otp.png",
-                        height: 130.h, width: double.maxFinite),
+                    // Image.asset("assets/otp.png",
+                    //     height: 130.h, width: double.maxFinite),
+
+                    Gif(
+                      height: 130.h,
+                      width: double.maxFinite,
+                      image: AssetImage("assets/otp_screen_gif.gif"),
+                      controller: _gifController,
+                      autostart: Autostart.no, // Prevents automatic play
+                      placeholder: (context) => const Text('Loading...'),
+                      onFetchCompleted: () {
+                        _gifController.reset();
+                        _gifController.forward();
+                      },
+                    ),
                     SizedBox(height: size.height * .06),
                     Center(
                       child: ReusableText(
@@ -91,7 +118,6 @@ class _OtpScreenState extends State<OtpScreen> {
                           " +91${authenticationController.phoneController.text.toString()}",
                           style: appStyle(14, kDark, FontWeight.bold)),
                     ),
-
                     SizedBox(height: 20.h),
                     Center(
                       child: SizedBox(

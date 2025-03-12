@@ -1,20 +1,17 @@
-import 'dart:developer';
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:user_app/common/app_style.dart';
-import 'package:user_app/common/custom_button.dart';
 import 'package:user_app/constants/constants.dart';
 import 'package:user_app/services/firebase_collections.dart';
-import 'package:user_app/views/profile/edit_your_profile_screen.dart';
-import '../../models/user_models.dart';
-import '../../utils/toast_msg.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:user_app/views/aboutUs/about_us_screen.dart';
+import 'package:user_app/views/auth/phone_authentication_screen.dart';
+import 'package:user_app/views/contactDetails/contact_details_screen.dart';
+import 'package:user_app/views/privacyPolicy/privacy_policy_screeen.dart';
+import 'package:user_app/views/profile/profile_details_screen.dart';
+import 'package:user_app/views/termsCondition/terms_condition.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -24,239 +21,193 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final FirebaseFirestore fire = FirebaseFirestore.instance;
-
-  final imagePicker = ImagePicker();
-  XFile? _image;
-  bool _loading = false;
-
-  bool get loading => _loading;
-
-  setLoading(bool value) {
-    _loading = value;
-    setState(() {});
-  }
-
-  late String? profilePictureI;
-
-  //pick image from gallery
-  void pickImageFromGallery(BuildContext context) async {
-    final pickedFile = await imagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 100);
-
-    if (pickedFile != null) {
-      _image = XFile(pickedFile.path);
-      // ignore: use_build_context_synchronously
-      uploadImage(context);
-      setState(() {});
-    }
-  }
-
-  //pick image from camera
-  void pickImageFromCamera(BuildContext context) async {
-    final pickedFile = await imagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 100);
-
-    if (pickedFile != null) {
-      _image = XFile(pickedFile.path);
-      // ignore: use_build_context_synchronously
-      uploadImage(context);
-      setState(() {});
-    }
-  }
-
-  void pickProfileImage(context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            height: 120.h,
-            child: Column(
-              children: [
-                ListTile(
-                  onTap: () {
-                    pickImageFromCamera(context);
-                    Navigator.pop(context);
-                    setState(() {});
-                  },
-                  leading: const Icon(Icons.camera, color: Colors.blue),
-                  title: const Text("Camera"),
-                ),
-                ListTile(
-                  onTap: () {
-                    pickImageFromGallery(context);
-                    Navigator.pop(context);
-                    setState(() {});
-                  },
-                  leading: const Icon(Icons.image, color: Colors.blue),
-                  title: const Text("Gallery"),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Modify the uploadImage function to save the image as JPEG
-  void uploadImage(BuildContext context) async {
-    setLoading(true);
-
-    // Save the image as JPEG
-    File jpegImage = File(_image!.path);
-    List<int> imageBytes = await jpegImage.readAsBytes();
-    String fileName =
-        "profile_picture_${DateTime.now().millisecondsSinceEpoch}.jpg";
-    String imagePath = '${(await getTemporaryDirectory()).path}/$fileName';
-    await File(imagePath).writeAsBytes(imageBytes);
-
-    // Store user image as a JPEG to Firebase Storage
-    firebase_storage.Reference storageRef = firebase_storage
-        .FirebaseStorage.instance
-        .ref("/profile${auth.currentUser!.uid}/$fileName");
-    firebase_storage.UploadTask uploadTask =
-        storageRef.putFile(File(imagePath));
-
-    // Upload image
-    firebase_storage.TaskSnapshot taskSnapshot = await uploadTask;
-
-    // Get uploaded image path
-    final newUrl = await taskSnapshot.ref.getDownloadURL();
-
-    // Upload image path to Firestore
-    await fire.doc('Users/${auth.currentUser!.uid}').update({
-      "profilePicture": newUrl.toString(),
-    }).then((value) {
-      log("Profile updated");
-      setState(() {
-        profilePictureI = newUrl.toString();
-        _image = null;
-      });
-      setLoading(false);
-      showToastMessage("Success", "Profile picture updated", Colors.green);
-    }).catchError((error) {
-      setLoading(false);
-      showToastMessage("Error", "Profile picture update failed", Colors.red);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<DocumentSnapshot>(
+      appBar: AppBar(
+        title: Text("Menu"),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 0.h),
+              GestureDetector(
+                  onTap: () => Get.to(() => ProfileDetailsScreen()),
+                  child: buildTopProfileSection()),
+              SizedBox(height: 10.h),
+              Container(
+                width: double.maxFinite,
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: kLightWhite,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Manage Profile",
+                          style: kIsWeb
+                              ? TextStyle(color: kPrimary)
+                              : appStyle(18, kPrimary, FontWeight.normal),
+                        ),
+                        SizedBox(width: 5.w),
+                        Container(width: 30.w, height: 3.h, color: kSecondary),
+                      ],
+                    ),
+                    SizedBox(height: 15.h),
+                    const Divider(color: kGrayLight),
+                    SizedBox(height: 10.h),
+                    buildListTile("assets/profile_bw.png", "My Profile", () {
+                      Get.to(() => ProfileDetailsScreen());
+                    }),
+                    buildListTile("assets/about_us_bw.png", "About us",
+                        () => Get.to(() => AboutUsScreen())),
+                    buildListTile("assets/help_bw.png", "Help",
+                        () => Get.to(() => ContactDetailsScreen())),
+                    buildListTile("assets/t_c_bw.png", "Terms & Conditions",
+                        () => Get.to(() => TermsAndConditionScreen())),
+                    buildListTile("assets/privacy_bw.png", "Privacy Policy",
+                        () => Get.to(() => PrivacyPolicyScreen())),
+                    buildListTile("assets/logout.png", "Log out", () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            title: Text("Logout"),
+                            content: Text(
+                                'Are you sure you want to log out from this account'),
+                            actions: [
+                              TextButton(
+                                child: Text('Yes',
+                                    style: appStyle(
+                                        15, kSecondary, FontWeight.normal)),
+                                onPressed: () {
+                                  logoutUser(context);
+                                },
+                              ),
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("No",
+                                      style: appStyle(
+                                          15, kPrimary, FontWeight.normal)))
+                            ],
+                          );
+                        },
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildListTile(String iconName, String title, void Function() onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ListTile(
+        leading:
+            Image.asset(iconName, height: 20.h, width: 20.w, color: kPrimary),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: kGray),
+        title: Text(title,
+            style: kIsWeb
+                ? TextStyle(color: kDark)
+                : appStyle(13, kDark, FontWeight.normal)),
+        // onTap: onTap,
+      ),
+    );
+  }
+
+  //================================ top Profile section =============================
+  Container buildTopProfileSection() {
+    return Container(
+      height: kIsWeb ? 180.h : 120.h,
+      width: double.maxFinite,
+      padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 12.w),
+      decoration: BoxDecoration(
+        color: kLightWhite,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Users')
             .doc(currentUId)
             .snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return const Center(child: Text('No data found'));
+            return Text('Error: ${snapshot.error}');
           }
 
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-          UserProfile user = UserProfile(
-            name: data['userName'],
-            email: data['email'],
-            imageUrl: data['profilePicture'],
-            whatsAppNumber: data["whatsAppNumber"],
-            currentAddress: data["address"],
-          );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-          profilePictureI = data["profilePicture"];
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          final profilePictureUrl = data['profilePicture'] ?? '';
+          final userName = data['userName'] ?? '';
+          final email = data['email'] ?? '';
 
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        pickProfileImage(context);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 3),
-                          shape: BoxShape.circle,
-                        ),
-                        child: _image == null
-                            ? profilePictureI == ""
-                                ? ClipOval(
-                                    child: CachedNetworkImage(
-                                      height: 80.h,
-                                      width: 80.w,
-                                      imageUrl:
-                                          "https://firebasestorage.googleapis.com/v0/b/pik-dop-taxi-service-app.appspot.com/o/parcel.png?alt=media&token=3d550118-0c01-4714-b9c2-cfb9bf06fbcd",
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                  )
-                                : ClipOval(
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      height: 80.h,
-                                      width: 80.w,
-                                      imageUrl: profilePictureI!,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                  )
-                            : ClipOval(
-                                child: Image.file(
-                                  File(_image!.path).absolute,
-                                  height: 80.h,
-                                  width: 80.w,
-                                ),
-                              ),
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 33.r,
+                backgroundColor: kSecondary,
+                child: profilePictureUrl.isEmpty
+                    ? Text(
+                        userName.isNotEmpty ? userName[0] : '',
+                        style: kIsWeb
+                            ? TextStyle(color: kWhite)
+                            : appStyle(20, kWhite, FontWeight.bold),
+                      )
+                    : CircleAvatar(
+                        radius: 33.r,
+                        backgroundImage: NetworkImage(profilePictureUrl),
                       ),
+              ),
+              SizedBox(width: 10.w),
+              Padding(
+                padding: EdgeInsets.only(top: 15.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName.isNotEmpty ? userName : '',
+                      style: kIsWeb
+                          ? TextStyle(color: kDark)
+                          : appStyle(15, kDark, FontWeight.bold),
                     ),
-                    SizedBox(width: 15.w),
+                    Text(
+                      email.isNotEmpty ? email : '',
+                      style: kIsWeb
+                          ? TextStyle(color: kDark)
+                          : appStyle(12, kDark, FontWeight.normal),
+                    ),
                   ],
                 ),
-                SizedBox(height: 20.h),
-                Text(
-                  user.name,
-                  style: appStyle(16, kDark, FontWeight.normal),
-                ),
-                SizedBox(height: 5.h),
-                Text(
-                  user.email,
-                  style: appStyle(14, kDark, FontWeight.normal),
-                ),
-                SizedBox(height: 20.h),
-                CustomButton(
-                  text: "Edit ",
-                  onPress: () {
-                    Get.to(() => EditProfileScreen(
-                        userId: currentUId,
-                        currentEmail: user.email,
-                        currentUsername: user.name,
-                        currentAddress: user.currentAddress,
-                        currentWhatsAppNumber: user.whatsAppNumber));
-                  },
-                  backgroundColor: kPrimary,
-                )
-              ],
-            ),
+              )
+            ],
           );
         },
       ),
     );
+  }
+
+  Future<void> logoutUser(context) async {
+    await auth.signOut().then((value) => {
+          Get.offAll(() => const PhoneAuthenticationScreen(),
+              transition: Transition.cupertino,
+              duration: const Duration(milliseconds: 900))
+        });
   }
 }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:user_app/common/app_style.dart';
 import 'package:user_app/common/reusable_row_widget.dart';
 import 'package:user_app/constants/constants.dart';
@@ -12,7 +11,6 @@ import 'package:user_app/helper/essentials.dart';
 import 'package:user_app/services/firebase_collections.dart';
 import 'package:user_app/utils/formate_date.dart';
 import 'package:user_app/utils/image_shimmer_effect.dart';
-import 'package:user_app/utils/shimmer_card_effect.dart';
 import 'package:user_app/utils/shimmer_grid_effect.dart';
 import 'package:user_app/utils/shimmer_line_effect.dart';
 
@@ -95,15 +93,23 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   }
 
   Widget buildBodyComponentSection(dynamic bookData) {
+    List<String> imageUrls = [];
+    if (bookData['frontImageUrl'] != null &&
+        bookData['frontImageUrl'].isNotEmpty) {
+      imageUrls.add(bookData['frontImageUrl']);
+    }
+    if (bookData['otherImageUrls'] != null &&
+        bookData['otherImageUrls'].isNotEmpty) {
+      imageUrls.addAll(List<String>.from(bookData['otherImageUrls']));
+    }
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10.h),
-          bookData['otherImageUrls'] != null &&
-                  bookData['otherImageUrls'].isNotEmpty
+          imageUrls.isNotEmpty
               ? CarouselSlider(
-                  items: bookData['otherImageUrls'].map<Widget>((imageUrl) {
+                  items: imageUrls.map<Widget>((imageUrl) {
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
@@ -121,7 +127,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                               const Icon(
                             Icons.error,
                             size: 50,
-                          ), // Show error icon if loading fails
+                          ),
                         ),
                       ),
                     );

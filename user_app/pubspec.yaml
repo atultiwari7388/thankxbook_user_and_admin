@@ -34,10 +34,20 @@ dependencies:
   path_provider:
   flutter_onboarding_slider: ^1.0.11
   shimmer: ^3.0.0
+  font_awesome_flutter:
+  gif: ^2.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.1
+
+#for app logo
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/n_logo.jpg"
+  min_sdk_android: 21
 
   flutter_lints: ^2.0.0
 

@@ -105,7 +105,14 @@ class _WishlistScreenState extends State<WishlistScreen> {
               if (!bookSnapshot.hasData || !bookSnapshot.data!.exists) {
                 return const SizedBox();
               }
+
               final bookDetails = bookSnapshot.data!;
+
+              // ✅ Check if the book is approved
+              if (bookDetails['approved'] != true) {
+                return const SizedBox(); // Hide books that are not approved
+              }
+
               if (index == wishlistData.length - 1 && _hasMore) {
                 return Column(
                   children: [

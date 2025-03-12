@@ -60,6 +60,7 @@ class _SellYourBookWidgetState extends State<SellYourBookWidget> {
           log(fetchedAddresses.toList().toString());
           setState(() {
             addresses = fetchedAddresses;
+            _selectedAddress = addresses.isNotEmpty ? addresses.first : null;
             isLoading = false;
           });
         } else {
@@ -97,98 +98,6 @@ class _SellYourBookWidgetState extends State<SellYourBookWidget> {
       log('Error picking image: $e');
     }
   }
-
-  // Future<void> _uploadBook() async {
-  //   try {
-  //     final user = FirebaseAuth.instance.currentUser;
-  //     if (user == null) {
-  //       log('User not authenticated');
-  //       return;
-  //     }
-
-  //     final String userId = user.uid;
-  //     final DateTime now = DateTime.now();
-
-  //     setState(() {
-  //       isLoading = true; // Show loading indicator
-  //     });
-
-  //     final frontImageFile = File(_frontImages.first.path);
-  //     final frontImageName = 'front_${now.microsecondsSinceEpoch}.jpg';
-  //     final Reference frontStorageRef = FirebaseStorage.instance
-  //         .ref()
-  //         .child('book_images')
-  //         .child(userId)
-  //         .child(frontImageName);
-  //     await frontStorageRef.putFile(frontImageFile);
-  //     final String frontImageUrl = await frontStorageRef.getDownloadURL();
-
-  //     List<String> otherImageUrls = [];
-  //     for (int i = 0; i < _otherImages.length; i++) {
-  //       final otherImageFile = File(_otherImages[i].path);
-  //       final otherImageName = 'other_${now.microsecondsSinceEpoch}_$i.jpg';
-  //       final Reference otherStorageRef = FirebaseStorage.instance
-  //           .ref()
-  //           .child('book_images')
-  //           .child(userId)
-  //           .child(otherImageName);
-  //       await otherStorageRef.putFile(otherImageFile);
-  //       final String otherImageUrl = await otherStorageRef.getDownloadURL();
-  //       otherImageUrls.add(otherImageUrl);
-  //     }
-
-  //     final DocumentReference bookDocRef = FirebaseFirestore.instance
-  //         .collection('Books')
-  //         .doc(); // Get a reference without an ID
-  //     final bookDocId = bookDocRef.id; // Get the auto-generated ID
-
-  //     // Add the 'bookDocId' field to the book data
-  //     final bookData = {
-  //       'userId': userId,
-  //       'bookName': _bookNameController.text.toString(),
-  //       'sellingPrice': _sellingPriceController.text.toString(),
-  //       'mrp': _mrpController.text.toString(),
-  //       'description': _descriptionController.text.toString(),
-  //       'frontImageUrl': frontImageUrl,
-  //       'otherImageUrls': otherImageUrls,
-  //       'address': _selectedAddress,
-  //       "enabled": false,
-  //       "approved": false,
-  //       "soldOut": false,
-  //       'createdAt': FieldValue.serverTimestamp(),
-  //       'bookDocId': bookDocId, // Add the bookDocId field
-  //     };
-
-  //     // Set the book data in Firestore
-  //     await bookDocRef.set(bookData);
-
-  //     // Store book document ID in user's collection
-  //     await FirebaseFirestore.instance.collection('Users').doc(userId).update({
-  //       'uploadedBooks': FieldValue.arrayUnion([bookDocRef.id]),
-  //     });
-
-  //     _bookNameController.clear();
-  //     _sellingPriceController.clear();
-  //     _mrpController.clear();
-  //     _descriptionController.clear();
-  //     setState(() {
-  //       _frontImages.clear();
-  //       _otherImages.clear();
-  //       isLoading = false; // Hide loading indicator
-  //     });
-
-  //     showToastMessage(
-  //         "Success", "Your Book uploaded successfully", Colors.green);
-  //     // Show confirmation popup
-  //     _showUploadConfirmationPopup();
-  //     log('Book uploaded successfully');
-  //   } catch (error) {
-  //     setState(() {
-  //       isLoading = false; // Hide loading indicator
-  //     });
-  //     log('Error uploading book: $error');
-  //   }
-  // }
 
   Future<void> _uploadBook() async {
     try {

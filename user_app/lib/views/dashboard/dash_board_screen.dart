@@ -78,7 +78,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       () => Scaffold(
         appBar: AppBar(
           title: ReusableText(
-              text: appName, style: appStyle(20, kPrimary, FontWeight.w500)),
+              text: appName, style: appStyle(20, kPrimary, FontWeight.bold)),
           centerTitle: true,
         ),
         body: loading

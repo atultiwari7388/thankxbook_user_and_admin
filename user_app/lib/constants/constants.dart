@@ -22,3 +22,4 @@ double height = 825.h;
 double width = 375.w;
 
 const String appName = "thankxbook";
+const String slogan = "Your Vision Our Mission";
