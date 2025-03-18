@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 
 class TabIndexController extends GetxController {
-  final RxInt _tabIndex = 0.obs;
+  var _tabIndex = 0.obs; // ✅ Observable
 
-  int get getTabIndex => _tabIndex.value;
+  int get getTabIndex => _tabIndex.value; // ✅ Getter for observable
 
-  set setTabIndex(int newValue) {
-    _tabIndex.value = newValue;
+  set setTabIndex(int index) {
+    _tabIndex.value = index; // ✅ Properly updates Rx variable
   }
 }

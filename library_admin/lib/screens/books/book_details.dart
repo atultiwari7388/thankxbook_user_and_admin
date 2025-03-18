@@ -43,8 +43,14 @@ class BookDetailsScreen extends StatelessWidget {
               const SizedBox(height: 20),
               // Display Front Image
               if (bookData['frontImageUrl'] != null)
-                Image.network(bookData['frontImageUrl'],
-                    height: 200, fit: BoxFit.cover),
+                Image.network(
+                  bookData['frontImageUrl'],
+                  height: 200,
+                  fit: BoxFit.cover,
+                  // headers: const {"Access-Control-Allow-Origin": "*"},
+                  // errorBuilder: (context, error, stackTrace) =>
+                  //     const Icon(Icons.error),
+                ),
 
               const SizedBox(height: 20),
 
@@ -64,6 +70,9 @@ class BookDetailsScreen extends StatelessWidget {
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,
+                          // headers: const {"Access-Control-Allow-Origin": "*"},
+                          // errorBuilder: (context, error, stackTrace) =>
+                          //     const Icon(Icons.error),
                         ),
                       );
                     },

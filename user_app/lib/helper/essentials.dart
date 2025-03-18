@@ -25,3 +25,12 @@ Future<void> openWhatsApp(String whatsappNumber) async {
     showToastMessage("Error", "Unable to open WhatsApp", kRed);
   }
 }
+
+Future<void> sendMail(String email) async {
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: email,
+  );
+
+  launchUrl(emailLaunchUri);
+}

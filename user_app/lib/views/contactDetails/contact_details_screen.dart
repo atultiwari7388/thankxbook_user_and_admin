@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:user_app/helper/essentials.dart';
 
 class ContactDetailsScreen extends StatelessWidget {
   const ContactDetailsScreen({super.key});
 
-  final String phoneNumber = "9971071144";
+  final String phoneNumber = "+919971071144";
   final String email = "support@windayroot.com";
-
-  void _launchPhoneCall() async {
-    final Uri url = Uri.parse("tel:$phoneNumber");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      print("Could not launch phone dialer.");
-    }
-  }
 
   void _launchWhatsApp() async {
     final Uri url = Uri.parse("https://wa.me/$phoneNumber");
@@ -23,15 +15,6 @@ class ContactDetailsScreen extends StatelessWidget {
       await launchUrl(url);
     } else {
       print("Could not launch WhatsApp.");
-    }
-  }
-
-  void _launchEmail() async {
-    final Uri url = Uri.parse("mailto:$email?subject=Support%20Request");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      print("Could not launch email.");
     }
   }
 
@@ -52,7 +35,7 @@ class ContactDetailsScreen extends StatelessWidget {
               title: "Call Now",
               subtitle: phoneNumber,
               color: Colors.green,
-              onTap: _launchPhoneCall,
+              onTap: () => makePhoneCall(phoneNumber),
             ),
             const SizedBox(height: 20),
             _buildContactTile(
@@ -68,7 +51,7 @@ class ContactDetailsScreen extends StatelessWidget {
               title: "Email",
               subtitle: email,
               color: Colors.red,
-              onTap: _launchEmail,
+              onTap: () => sendMail(email),
             ),
           ],
         ),

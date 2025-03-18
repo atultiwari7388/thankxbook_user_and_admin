@@ -66,14 +66,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     buildListTile("assets/profile_bw.png", "My Profile", () {
                       Get.to(() => ProfileDetailsScreen());
                     }),
-                    buildListTile("assets/about_us_bw.png", "About us",
-                        () => Get.to(() => AboutUsScreen())),
-                    buildListTile("assets/help_bw.png", "Help",
+                    // buildListTile("assets/about_us_bw.png", "About us",
+                    //     () => Get.to(() => AboutUsScreen())),
+                    buildListTile("assets/help_bw.png", "Customer Support",
                         () => Get.to(() => ContactDetailsScreen())),
-                    buildListTile("assets/t_c_bw.png", "Terms & Conditions",
-                        () => Get.to(() => TermsAndConditionScreen())),
-                    buildListTile("assets/privacy_bw.png", "Privacy Policy",
-                        () => Get.to(() => PrivacyPolicyScreen())),
+                    // buildListTile("assets/t_c_bw.png", "Terms & Conditions",
+                    //     () => Get.to(() => TermsAndConditionScreen())),
+                    // buildListTile("assets/privacy_bw.png", "Privacy Policy",
+                    //     () => Get.to(() => PrivacyPolicyScreen())),
+
                     buildListTile("assets/logout.png", "Log out", () {
                       showDialog<void>(
                         context: context,

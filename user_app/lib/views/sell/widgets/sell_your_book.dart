@@ -46,45 +46,44 @@ class _SellYourBookWidgetState extends State<SellYourBookWidget> {
         isLoading = true;
       });
 
-      if (user != null) {
-        final userDataSnapshot = await FirebaseFirestore.instance
-            .collection('Users')
-            .doc(currentUId)
-            .get();
-        final userData = userDataSnapshot.data();
-        if (userData != null && userData['address'] is List) {
-          final List<dynamic> addressesData =
-              userData['address'] as List<dynamic>;
-          final List<String> fetchedAddresses =
-              addressesData.map((address) => address.toString()).toList();
-          log(fetchedAddresses.toList().toString());
-          setState(() {
-            addresses = fetchedAddresses;
-            _selectedAddress = addresses.isNotEmpty ? addresses.first : null;
-            isLoading = false;
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-          });
-          log('Address data not found or is not a list');
-        }
+      final userDataSnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(currentUId)
+          .get();
+      final userData = userDataSnapshot.data();
+      if (userData != null && userData['address'] is List) {
+        final List<dynamic> addressesData =
+            userData['address'] as List<dynamic>;
+        final List<String> fetchedAddresses =
+            addressesData.map((address) => address.toString()).toList();
+        log(fetchedAddresses.toList().toString());
+        setState(() {
+          addresses = fetchedAddresses;
+          _selectedAddress = addresses.isNotEmpty ? addresses.first : null;
+          isLoading = false;
+        });
       } else {
         setState(() {
           isLoading = false;
         });
-        log('Current user not found');
+        log('Address data not found or is not a list');
       }
     } catch (error) {
       log('Error fetching addresses: $error');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
 //========================= Select Image ====================
   Future<void> _selectImage(bool isFrontImage) async {
     try {
-      final XFile? pickedFile =
-          await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 50,
+      );
       if (pickedFile != null) {
         setState(() {
           if (isFrontImage) {
@@ -159,6 +158,7 @@ class _SellYourBookWidgetState extends State<SellYourBookWidget> {
       final bookData = {
         'userId': userId,
         'bookName': _bookNameController.text.toString(),
+        'bookNameLowerCase': _bookNameController.text.toString().toLowerCase(),
         'sellingPrice': _sellingPriceController.text.toString(),
         'mrp': _mrpController.text.toString(),
         'description': _descriptionController.text.toString(),

@@ -10,7 +10,6 @@ import 'package:user_app/common/custom_button.dart';
 import 'package:user_app/constants/constants.dart';
 import 'package:user_app/services/firebase_collections.dart';
 import 'package:user_app/utils/shimmer_card_effect.dart';
-import 'package:user_app/utils/shimmer_grid_effect.dart';
 import 'package:user_app/utils/toast_msg.dart';
 import 'package:user_app/views/sell/widgets/edit_your_book.dart';
 import 'package:user_app/views/sell/widgets/sell_your_book.dart';

@@ -98,14 +98,13 @@ class _EditYourBookScreenState extends State<EditYourBookScreen> {
 
   Future<void> _selectImage(bool isFrontImage) async {
     try {
-      final XFile? pickedFile =
-          await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedFile = await _picker.pickImage(
+          source: ImageSource.gallery, imageQuality: 50);
       if (pickedFile != null) {
         setState(() {
           if (isFrontImage) {
             _newFrontImage = pickedFile;
           } else {
-            // Clear previous images and add the new one
             _newOtherImages.clear(); // Clear previous selections
             _newOtherImages.add(pickedFile); // Add the new selected image
           }
@@ -115,67 +114,6 @@ class _EditYourBookScreenState extends State<EditYourBookScreen> {
       log('Error picking image: $e');
     }
   }
-
-  // Future<void> _updateBook() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   try {
-  //     String? newFrontImageUrl;
-  //     List<String> newOtherImageUrls = [];
-
-  //     // Upload new front image if changed
-  //     if (_newFrontImage != null) {
-  //       newFrontImageUrl = await uploadImageToFirebase(_newFrontImage!);
-  //     } else {
-  //       newFrontImageUrl = _frontImageUrl;
-  //     }
-
-  //     for (var file in _newOtherImages) {
-  //       String imageUrl = await uploadImageToFirebase(file);
-  //       if (!_otherImageUrls.contains(imageUrl)) {
-  //         newOtherImageUrls.add(imageUrl);
-  //       }
-  //     }
-
-  //     // Add previous image URLs if not replaced
-  //     newOtherImageUrls.addAll(_otherImageUrls);
-
-  //     await FirebaseFirestore.instance
-  //         .collection('Books')
-  //         .doc(widget.bookId)
-  //         .update({
-  //       'bookName': _bookNameController.text,
-  //       'sellingPrice': _sellingPriceController.text.toString(),
-  //       'mrp': _mrpController.text.toString(),
-  //       'description': _descriptionController.text,
-  //       'address': _selectedAddress,
-  //       "approved": false,
-  //       'frontImageUrl': newFrontImageUrl,
-  //       'otherImageUrls': newOtherImageUrls,
-  //       'updated_at': DateTime.now(),
-  //     });
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     log("Error updating book: $e");
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
-  // Future<String> uploadImageToFirebase(XFile file) async {
-  //   Reference ref = FirebaseStorage.instance
-  //       .ref()
-  //       .child('book_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-  //   await ref.putFile(File(file.path));
-  //   return await ref.getDownloadURL();
-  // }
 
   Future<void> _updateBook() async {
     setState(() {

@@ -30,22 +30,45 @@ class _TotalBooksScreenState extends State<TotalBooksScreen> {
     _bookStream = _getBookStream();
   }
 
+  // Stream<List<DocumentSnapshot>> _getBookStream() {
+  //   Query query = FirebaseDatabaseServices().allBookingList;
+
+  //   // Apply orderBy and where clauses based on search text
+  //   if (searchController.text.isNotEmpty) {
+  //     query = query
+  //         .orderBy("createdAt")
+  //         .where("bookName",
+  //             isGreaterThanOrEqualTo: searchController.text.toString())
+  //         .where("bookName",
+  //             isLessThanOrEqualTo: searchController.text.toString());
+  //   } else {
+  //     query = query.orderBy("createdAt", descending: true);
+  //   }
+
+  //   return query.limit(_perPage).snapshots().map((snapshot) => snapshot.docs);
+  // }
+
   Stream<List<DocumentSnapshot>> _getBookStream() {
     Query query = FirebaseDatabaseServices().allBookingList;
 
-    // Apply orderBy and where clauses based on search text
-    if (searchController.text.isNotEmpty) {
-      query = query
-          .orderBy("createdAt")
-          .where("bookName",
-              isGreaterThanOrEqualTo: searchController.text.toString())
-          .where("bookName",
-              isLessThanOrEqualTo: searchController.text.toString());
-    } else {
-      query = query.orderBy("createdAt", descending: true);
-    }
+    // Fetch all books first
+    return query
+        .orderBy("createdAt", descending: true)
+        .limit(_perPage)
+        .snapshots()
+        .map((snapshot) {
+      final books = snapshot.docs;
 
-    return query.limit(_perPage).snapshots().map((snapshot) => snapshot.docs);
+      // Local filtering for case-insensitive search
+      final filteredBooks = books.where((book) {
+        final bookName = book['bookName'].toString().toLowerCase();
+        final searchText = searchController.text.trim().toLowerCase();
+
+        return searchText.isEmpty || bookName.contains(searchText);
+      }).toList();
+
+      return filteredBooks;
+    });
   }
 
   void _loadNextPage() {

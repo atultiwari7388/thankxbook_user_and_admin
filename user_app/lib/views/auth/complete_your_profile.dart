@@ -16,7 +16,6 @@ class CompleteYourProfileScreen extends StatefulWidget {
       _CompleteYourProfileScreenState();
 }
 
-
 class _CompleteYourProfileScreenState extends State<CompleteYourProfileScreen> {
   @override
   Widget build(BuildContext context) {
@@ -57,8 +56,10 @@ class _CompleteYourProfileScreenState extends State<CompleteYourProfileScreen> {
                         CustomButton(
                           text: "Add Address",
                           onPress: () {
-                            String newAddress = value.addressController.text.toString();
-                            if(newAddress.isNotEmpty && value.addressList.length<5){
+                            String newAddress =
+                                value.addressController.text.toString();
+                            if (newAddress.isNotEmpty &&
+                                value.addressList.length < 5) {
                               value.addAddress(newAddress);
                               value.addressController.clear();
                             }
@@ -73,6 +74,10 @@ class _CompleteYourProfileScreenState extends State<CompleteYourProfileScreen> {
                     CustomTextFieldWidget(
                         controller: value.addressController,
                         textInputType: TextInputType.streetAddress),
+                    SizedBox(height: 5.h),
+                    Text(
+                        "After entering the address, click on 'Add Address' button to add the address to the list.",
+                        style: appStyle(13, kGray, FontWeight.normal)),
                     SizedBox(height: 20.h),
                     const CustomHeadingWidget(heading: "WhatsApp Number"),
                     SizedBox(height: 5.h),
